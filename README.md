@@ -24,10 +24,9 @@ Admin privileges are required in order to query for the handles of another proce
 This is why when you run MultiBlox.exe it will first issue the UAC prompt in order to elevate permissions.
 
 ## Requirements
-- Windows Only
-  - sorry, not sure if can offer support on other os
+- Windows 64-bit Only
+  - sorry, not sure if can offer support on other platforms
 - .Net Runtime v8 
   - You will know this is your problem if no console window comes up after it asks for UAC. 
-  - Get it here: [.Net 8.0]("https://dotnet.microsoft.com/en-us/download/dotnet/8.0")
-    - Scroll to find "Runtime" heading and download the correct one for your pc (probably x64). 
+  - Get it here: [.Net 8.0](https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=8.0.0&arch=x64&rid=win10-x64)
   - You can also go into Event Viewer and you will see an application error that tells you to download the above.
