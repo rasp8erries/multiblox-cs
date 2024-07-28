@@ -28,5 +28,5 @@ This is why when you run MultiBlox.exe it will first issue the UAC prompt in ord
   - sorry, not sure if can offer support on other os
 - .Net Runtime v8 
   - You will know this is your problem if no console window comes up after it asks for UAC. 
-  - Get it here: [.Net 8.0]("https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=8.0.0&arch=x64&rid=win10-x64")
+  - Get it here: [.Net 8.0]("https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.7-windows-x64-installer")
   - You can also go into Event Viewer and you will see an application error that tells you to download the above.
