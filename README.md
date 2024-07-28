@@ -5,6 +5,7 @@
 Get the latest release here: [Releases](https://github.com/rasp8erries/multiblox-cs/releases/tag/release)
 
 ## Usage
+- SEE REQUIREMENTS BELOW FIRST
 - Launch an instance of Roblox
 - Run the "MultiBlox.exe" 
 - Click 'Yes' for the UAC prompt (Admin is required!) 
@@ -21,3 +22,11 @@ So all this MultiBlox app really does is call the "handle" utility to find the r
 Admin privileges are required in order to query for the handles of another process (Roblox). 
 
 This is why when you run MultiBlox.exe it will first issue the UAC prompt in order to elevate permissions.
+
+## Requirements
+- Windows Only
+  - sorry, not sure if can offer support on other os
+- .Net Runtime v8 
+  - You will know this is your problem if no console window comes up after it asks for UAC. 
+  - Get it here: [.Net 8.0]("https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=8.0.0&arch=x64&rid=win10-x64")
+  - You can also go into Event Viewer and you will see an application error that tells you to download the above.
