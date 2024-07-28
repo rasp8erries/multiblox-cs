@@ -5,7 +5,7 @@
 Get the latest release here: [Releases](https://github.com/rasp8erries/multiblox-cs/releases/tag/release)
 
 ## Usage
-- SEE REQUIREMENTS BELOW FIRST
+- SEE [REQUIREMENTS](#reqs) BELOW FIRST
 - Launch an instance of Roblox
 - Run the "MultiBlox.exe" 
 - Click 'Yes' for the UAC prompt (Admin is required!) 
@@ -23,7 +23,7 @@ Admin privileges are required in order to query for the handles of another proce
 
 This is why when you run MultiBlox.exe it will first issue the UAC prompt in order to elevate permissions.
 
-## Requirements
+## <a name="reqs"></a>Requirements
 - Windows 64-bit Only
   - sorry, not sure if can offer support on other platforms
 - .Net Runtime v8 
