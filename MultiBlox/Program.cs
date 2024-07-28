@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Security.Principal;
 
 namespace MultiBlox
 {
@@ -9,17 +8,6 @@ namespace MultiBlox
         [GeneratedRegex("\r\n|\r|\n")]
         private static partial Regex LineSplitRegex();
 
-        static bool IsProcElevated()
-        {
-            bool isElevated = false;
-            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
-            {
-                WindowsPrincipal principal = new WindowsPrincipal(identity);
-                isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
-            }
-            return isElevated;
-        }
-
         static string[] RunHandleProc(string args)
         {
             string output = null;
@@ -27,24 +15,15 @@ namespace MultiBlox
             {
                 pProcess.StartInfo.FileName = @"handle64.exe";
                 pProcess.StartInfo.Arguments = args;
-                if (IsProcElevated())
-                {
-                    pProcess.StartInfo.UseShellExecute = false;
-                }
-                else
-                {
-                    pProcess.StartInfo.UseShellExecute = false;
-                    pProcess.StartInfo.Verb = "runas";
-                }
-                
+                pProcess.StartInfo.UseShellExecute = false;
                 pProcess.StartInfo.RedirectStandardOutput = true;
                 pProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                pProcess.StartInfo.CreateNoWindow = true; //not diplay a windows
+                pProcess.StartInfo.CreateNoWindow = true; 
                 try
                 {
                     pProcess.Start();
-                    output = pProcess.StandardOutput.ReadToEnd(); //The output result
-                    pProcess.WaitForExit();
+                    output = pProcess.StandardOutput.ReadToEnd(); 
+                    pProcess.WaitForExit(30000); // just in case.. dont hang for more than 30 sec...
                 }
                 catch(Exception ex)
                 {
@@ -74,7 +53,8 @@ namespace MultiBlox
         static void Main(string[] args)
         {
             Console.WriteLine("Searching for Roblox singleton event...");
-            string[] outlines = RunHandleProc("-a -p RobloxPlayerBeta.exe ROBLOX_singletonEvent -v");
+            string[] outlines = RunHandleProc("-a -p RobloxPlayerBeta.exe ROBLOX_singletonEvent -v -accepteula"); // adding 'accepteula' arg bc it will fail if its never been accepted 
+
             if (outlines!=null)
             {
                 if (outlines.Length>=1 && outlines[0].Trim()=="No matching handles found.")
