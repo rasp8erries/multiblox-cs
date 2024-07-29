@@ -2,7 +2,7 @@
  Utility to remove Roblox singleton event so you can run multiple instances of Roblox.
 
 ## Download
-Get the latest release here: [Releases](https://github.com/rasp8erries/multiblox-cs/releases/tag/release)
+Get the latest release here: [Releases](https://github.com/rasp8erries/multiblox-cs/releases/latest)
 
 ## Usage
 - SEE [REQUIREMENTS](#reqs) BELOW FIRST
