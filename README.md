@@ -10,6 +10,8 @@ Get the latest release here: [Releases](https://github.com/rasp8erries/multiblox
 - Run the "MultiBlox.exe" 
 - Click 'Yes' for the UAC prompt (Admin is required!) 
 - Console output will indicate if successful
+- You can then open more Roblox instances! 
+- *NOTE: You should run this again after you open all the Roblox instances to clear their singleton events as well.*
 
 ![MultiBlox Success](/images/multiblox-success.png)
 
@@ -24,8 +26,8 @@ Admin privileges are required in order to query for the handles of another proce
 This is why when you run MultiBlox.exe it will first issue the UAC prompt in order to elevate permissions.
 
 ## <a name="reqs"></a>Requirements
-- Windows 64-bit Only
-  - sorry, not sure if can offer support on other platforms
+- Windows Only
+  - sorry, not sure if can offer support on other operating systems 
 - .Net Runtime v8 
   - You will know this is your problem if no console window comes up after it asks for UAC. 
   - Get it here: [.Net 8.0](https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=8.0.0&arch=x64&rid=win10-x64)
