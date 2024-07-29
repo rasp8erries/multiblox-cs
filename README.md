@@ -6,14 +6,12 @@ Get the latest release here: [Releases](https://github.com/rasp8erries/multiblox
 
 ## Usage
 - SEE [REQUIREMENTS](#reqs) BELOW FIRST
-- Launch an instance of Roblox
 - Run the "MultiBlox.exe" 
 - Click 'Yes' for UAC elevation, if prompted (Admin is required!) 
-- Console output will indicate if successful
-- You can then open more Roblox instances! 
-- *NOTE: You should run this again after you open all the Roblox instances to clear their singleton events as well.*
+- That's it! Will find existing AND future Roblox instances. 
+- *(So leave it running while you're alting)*
 
-![MultiBlox Success](/images/multiblox-success-v1.0.3.png)
+![MultiBlox Success](/images/multiblox-success-v1.0.4.png)
 
 ## How it works
 This uses an utility app provided by [SysInternals - Handle](https://learn.microsoft.com/en-us/sysinternals/downloads/handle). 

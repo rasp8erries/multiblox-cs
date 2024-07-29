@@ -6,13 +6,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AssemblyVersion>1.0.3</AssemblyVersion>
-    <FileVersion>1.0.3</FileVersion>
+    <AssemblyVersion>1.0.4</AssemblyVersion>
+    <FileVersion>1.0.4</FileVersion>
+    <NoWarn>CA1416</NoWarn> <!-- Ignore warnings for stuff that only works on Windows OS. -->
+    <ApplicationIcon>myicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <None Update="handle64.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="System.Management" Version="8.0.0" />
+  </ItemGroup>
 </Project>

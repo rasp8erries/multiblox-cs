@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Management;
 
 namespace MultiBlox
 {
@@ -9,13 +10,18 @@ namespace MultiBlox
         /// the roblox event handle names we need to search for and close in order to run multiple roblox instances. 
         /// the order is important. the mutex must go first. 
         /// </summary>
-        static readonly string[] _ROBLOX_EVENTS = {"ROBLOX_singletonMutex","ROBLOX_singletonEvent"};
+        static readonly string[] _ROBLOX_EVENTS = ["ROBLOX_singletonMutex","ROBLOX_singletonEvent"];
 
         /// <summary>
         /// used to parse command output by lines
         /// </summary>
         [GeneratedRegex("\r\n|\r|\n")]
         private static partial Regex LineSplitRegex();
+
+        /// <summary>
+        /// event for keeping the console app running, will listen for ctrl+c to exit.
+        /// </summary>
+        static readonly ManualResetEvent _quitEvent = new(false);
 
         /// <summary>
         /// Calls "handle64" utility included in this project, which is provided by MS / SysInternals: 
@@ -102,7 +108,7 @@ namespace MultiBlox
             {
                 if (outlines.Length>=1 && outlines[0].Trim()=="No matching handles found.")
                 {
-                    Console.WriteLine("[PID:{0}] {1} has already been closed for this instance.",pid,handleName);
+                    //Console.WriteLine("[PID:{0}] {1} has already been closed for this instance.",pid,handleName);
                 }
                 else if (outlines.Length>=2 && outlines[0].Trim()=="Process,PID,Type,Handle,Name") // if we find the event handle, we end up here
                 {
@@ -149,6 +155,55 @@ namespace MultiBlox
         }
 
         /// <summary>
+        /// event called when a new roblox instance is started 
+        /// will continually attempt to close the singleton handles until it succeeds 
+        /// because they might not exist right away on process start
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnEventArrived(object sender, EventArrivedEventArgs e)
+        {
+            // getting the process ID from event args
+            ManagementBaseObject targetInstance = (ManagementBaseObject)e.NewEvent.Properties["TargetInstance"].Value;
+            var pid = targetInstance["Handle"].ToString();
+            if (pid!=null)
+            {
+                Console.WriteLine("");
+                Console.WriteLine("New Roblox Instance Detected! PID:{0}",pid);
+                var evQueue = new Queue<string>(_ROBLOX_EVENTS); // make a new queue from the static event handle names
+                string? currEv = null;
+                while (evQueue.Count>0) // loop while the queue has anything in it 
+                {
+                    if (currEv==null) // if no current event handle name, get one from queue without removing any
+                    {
+                        if (!evQueue.TryPeek(out currEv))
+                            break; // if queue empty then we're done, break from loop
+                    }
+                    if(currEv!=null)
+                    {
+                        if (FindAndCloseRobloxEvent(pid.ToString(),currEv)) // attempt to close the event handle
+                        {
+                            evQueue.Dequeue(); // closed this event handle so remove it from the queue
+                            currEv = null; // clear the current event var so we get a new one on next loop iteration
+                        }
+                        else
+                        {
+                            //Console.WriteLine("[PID:{0}] {1} Not Found Yet",pid,currEv); // was just using this for testing.. dont think need 
+                            Thread.Sleep(1000); // failed to find event handle on new process, so lets wait for 1 second before loop tries again
+                        }
+                    }
+                }
+
+                // finished, now just repeat the listening / exit verbiage for ease of use 
+                Console.WriteLine("");
+                Console.WriteLine("");
+
+                Console.WriteLine("Listening for new Roblox instances...");
+                Console.WriteLine("Press [Ctrl+C] to stop/exit MultiBlox.");
+            }
+        }        
+
+        /// <summary>
         /// main execution begins here.
         /// but u should know this. 
         /// if ur pokin around. 
@@ -158,6 +213,13 @@ namespace MultiBlox
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+            // this stuff listens for new roblox process instances 
+            WqlEventQuery query = new("__InstanceCreationEvent", new TimeSpan(0,0,1),
+                                      "TargetInstance isa \"Win32_Process\" and TargetInstance.Name = 'RobloxPlayerBeta.exe'");
+            ManagementEventWatcher watcher = new(query);
+            watcher.EventArrived += new EventArrivedEventHandler(OnEventArrived);
+            watcher.Start();
+
             Console.WriteLine("Finding Roblox instances running...");
             var pids = FindRobloxProcesses(); // get list of roblox process IDs
             
@@ -198,13 +260,28 @@ namespace MultiBlox
             }
             else
             {
-                Console.WriteLine("Roblox not running. Start the first instance of Roblox and try again.");
+                Console.WriteLine("Roblox not running.");
             }
 
             Console.WriteLine("");
             Console.WriteLine("");
-            Console.WriteLine("Press [ENTER] key to exit.");
-            Console.ReadLine();
+
+            Console.WriteLine("Listening for new Roblox instances...");
+            Console.WriteLine("Press [Ctrl+C] to stop/exit MultiBlox.");
+            Console.CancelKeyPress += (sender, eArgs) => {
+                _quitEvent.Set();
+                eArgs.Cancel = true;
+            };
+
+            // kick off asynchronous stuff 
+
+            _quitEvent.WaitOne();
+
+            Console.WriteLine("Closing...");
+            watcher.Stop();
+            watcher.Dispose();
+
+            // cleanup/shutdown and quit
         }
     }
 }
