@@ -41,7 +41,13 @@ If you get a Windows Security warning similar to the below, don't be alarmed. It
 
 ![ms-sec-1](/images/ms-security-1.png)![ms-sec-2](/images/ms-security-2.png) 
 
-Then its probably because you did not "Unblock" the zip file before extracting.  
+And it is happening probably because you did not "Unblock" the zip file before extracting.  
+
+**BUT BY ALL MEANS GO AHEAD AND VIRUS SCAN THE ZIP FILE**  
+
+*(I would too, not offended, lol)*  
+
+*You can always clone the repository and build the code yourself if you want to be safe! ;)*
 
 Go to properties on the release zip file, check "Unblock", and click OK. 
 
