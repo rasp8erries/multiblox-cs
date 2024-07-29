@@ -38,8 +38,10 @@ You probably need to download/install [.Net Runtime 8.0](https://aka.ms/dotnet-c
 
 ### Security Warnings
 If you get a Windows Security warning similar to the below: 
-![ms-sec-1](/images/ms-security-1.png)![ms-sec-1](/images/ms-security-2.png) 
+![ms-sec-1](/images/ms-security-1.png)![ms-sec-2](/images/ms-security-2.png) 
+
 Then its probably because you did not "Unblock" the zip file before extracting.  
 
 Go to properties on the release zip file, check "Unblock", and click OK. 
+
 ![unblock-zip](/images/multiblox-zip-props.png)
