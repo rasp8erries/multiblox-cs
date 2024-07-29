@@ -6,6 +6,12 @@ namespace MultiBlox
     partial class Program
     {
         /// <summary>
+        /// the roblox event handle names we need to search for and close in order to run multiple roblox instances. 
+        /// the order is important. the mutex must go first. 
+        /// </summary>
+        static readonly string[] _ROBLOX_EVENTS = {"ROBLOX_singletonMutex","ROBLOX_singletonEvent"};
+
+        /// <summary>
         /// used to parse command output by lines
         /// </summary>
         [GeneratedRegex("\r\n|\r|\n")]
@@ -18,9 +24,9 @@ namespace MultiBlox
         /// </summary>
         /// <param name="args">the command arguments string to pass to handle64 utility</param>
         /// <returns>the parsed output as an array of the lines of text</returns>
-        static string[] RunHandleProc(string args)
+        static string[]? RunHandleProc(string args)
         {
-            string output = null;
+            string? output = null;
             using(Process pProcess = new Process())
             {
                 pProcess.StartInfo.FileName = @"handle64.exe"; // sysinternals util included in this proj's build 
@@ -67,7 +73,8 @@ namespace MultiBlox
         /// <returns>string array of roblox PIDs</returns>
         static string[] FindRobloxProcesses()
         {
-            var robloxProcs = Process.GetProcessesByName("RobloxPlayerBeta");
+            // get roblox processes ordered by longest running first
+            var robloxProcs = Process.GetProcessesByName("RobloxPlayerBeta").OrderByDescending(x => DateTime.Now - x.StartTime).ToArray();
             string[] pids = new string[robloxProcs.Length];
             for(var i = 0; i < robloxProcs.Length; i++)
             {
@@ -77,26 +84,27 @@ namespace MultiBlox
         }
 
         /// <summary>
-        /// Searches for Roblox Singleton Event Handle for a specified process ID.
+        /// Searches for a Roblox Event Handle for a specified process ID.
         /// If found, closes the handle. 
         /// </summary>
         /// <param name="pid">Roblox Process ID</param>
-        /// <returns>boolean indicating whether found & closed singleton handle</returns>
-        static bool FindAndCloseRobloxSingleton(string pid)
+        /// <param name="handleName">Name of event handle to close</param>
+        /// <returns>boolean indicating whether found & closed handle</returns>
+        static bool FindAndCloseRobloxEvent(string pid, string handleName)
         {
             bool foundAndClosed = false;
-            Console.WriteLine("[PID:{0}] Searching for Roblox singleton event...",pid);
-            // call sysinternals to search for the roblox singleton handle 
+            Console.WriteLine("[PID:{0}] Searching for {1}...",pid,handleName);
+            // call sysinternals to search for the roblox event handle 
             // see here for info on the args etc: 
             // https://learn.microsoft.com/en-us/sysinternals/downloads/handle#usage
-            string[] outlines = RunHandleProc(string.Format("-a -p {0} ROBLOX_singletonEvent -v -accepteula",pid)); // adding 'accepteula' arg bc it will fail if its never been accepted 
+            string[]? outlines = RunHandleProc(string.Format("-a -p {0} {1} -v -accepteula",pid,handleName)); // adding 'accepteula' arg bc it will fail if its never been accepted 
             if (outlines!=null) // if its null we got an error 
             {
                 if (outlines.Length>=1 && outlines[0].Trim()=="No matching handles found.")
                 {
-                    Console.WriteLine("[PID:{0}] Roblox singleton event has already been closed for this instance.",pid);
+                    Console.WriteLine("[PID:{0}] {1} has already been closed for this instance.",pid,handleName);
                 }
-                else if (outlines.Length>=2 && outlines[0].Trim()=="Process,PID,Type,Handle,Name") // if we find the singleton handle, we end up here
+                else if (outlines.Length>=2 && outlines[0].Trim()=="Process,PID,Type,Handle,Name") // if we find the event handle, we end up here
                 {
                     var handlevalues = outlines[1].Trim().Split(','); // the -v arg we used asks for CSV output, so we're splitting the values line by comma 
                     if (handlevalues.Length==5) // 5 heading names, so 5 values..
@@ -104,7 +112,7 @@ namespace MultiBlox
                         var _pid = handlevalues[1]; // process ID
                         var hid = handlevalues[3]; // handle ID
 
-                        Console.WriteLine("[PID:{0}] Roblox singleton event found! Closing...",_pid);
+                        Console.WriteLine("[PID:{0}] {1} found! Closing...",_pid,handleName);
                         
                         // call sysinternals using -c arg to specify a handle to close
                         // the -y arg bypasses confirmation before closing handle 
@@ -114,7 +122,7 @@ namespace MultiBlox
                         {
                             if (outlines.Length>=3 && outlines[2].Trim()=="Handle closed.") // confirming output so we know that it worked 
                             {
-                                Console.WriteLine("[PID:{0}] Roblox singleton event closed!",_pid);
+                                Console.WriteLine("[PID:{0}] {1} closed!",_pid,handleName);
                                 foundAndClosed = true;
                             }
                             else // otherwise smth must have gone wrong..
@@ -135,7 +143,7 @@ namespace MultiBlox
             }
             else
             {
-                Console.WriteLine("[PID:{0}] Failed to locate Roblox singleton.",pid);
+                Console.WriteLine("[PID:{0}] Failed to locate {1}.",pid,handleName);
             }
             return foundAndClosed;
         }
@@ -157,19 +165,25 @@ namespace MultiBlox
             {
                 Console.WriteLine("Found {0} Roblox instance(s) running. PIDS: {1}",pids.Length,string.Join(", ",pids));
 
-                var results = new List<KeyValuePair<string,bool>>();
+                var results = new List<Tuple<string,string,bool>>();
                 foreach(var pid in pids)
                 {
                     Console.WriteLine(""); // just so there's a blank line between each roblox instance handle search output
-                    results.Add(new KeyValuePair<string, bool>(pid,FindAndCloseRobloxSingleton(pid)));
+                    // loop over the event handle names we need to search for & close (if found)
+                    foreach(var ev in _ROBLOX_EVENTS)
+                    {
+                        // store results in a list of tuples
+                        // PID, Handle Name, True/False if found/closed
+                        results.Add(new Tuple<string,string,bool>(pid,ev,FindAndCloseRobloxEvent(pid,ev))); 
+                    }
                 }
                 Console.WriteLine("");
                 Console.WriteLine("Results:");
                 bool foundAny = false;
-                foreach(var kv in results)
+                foreach(var tpl in results)
                 {
-                    Console.WriteLine("[PID:{0}] {1}",kv.Key,kv.Value ? "Singleton Closed" : "No Singleton Found");
-                    if (kv.Value)
+                    Console.WriteLine("[PID:{0}] {1} {2}",tpl.Item1,tpl.Item2,tpl.Item3 ? "CLOSED" : "NOT FOUND");
+                    if (tpl.Item3)
                         foundAny = true;
                 }
                 Console.WriteLine("");
