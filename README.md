@@ -10,6 +10,7 @@ Get the latest release here: [Releases](https://github.com/rasp8erries/multiblox
 - Click 'Yes' for UAC elevation, if prompted (Admin is required!) 
 - That's it! Will find existing AND future Roblox instances. 
 - *(So leave it running while you're alting)*
+- If you have problems running it see [Issues](#issues) below. 
 
 ![MultiBlox Success](/images/multiblox-success-v1.0.4.png)
 
@@ -30,3 +31,15 @@ This is why when you run MultiBlox.exe it will first issue the UAC prompt in ord
   - You will know this is your problem if no console window comes up after it asks for UAC. 
   - Get it here: [.Net 8.0](https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=8.0.0&arch=x64&rid=win10-x64)
   - You can also go into Event Viewer and you will see an application error that tells you to download the above.
+
+## <a name="issues"></a>Issues
+### Nothing Opens
+You probably need to download/install [.Net Runtime 8.0](https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=8.0.0&arch=x64&rid=win10-x64).
+
+### Security Warnings
+If you get a Windows Security warning similar to the below: 
+![ms-sec-1](/images/ms-security-1.png)![ms-sec-1](/images/ms-security-2.png) 
+Then its probably because you did not "Unblock" the zip file before extracting.  
+
+Go to properties on the release zip file, check "Unblock", and click OK. 
+![unblock-zip](/images/multiblox-zip-props.png)
