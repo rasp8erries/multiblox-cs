@@ -19,6 +19,10 @@ This uses an utility app provided by [SysInternals - Handle](https://learn.micro
 
 So all this MultiBlox app really does is call the "handle" utility to find the roblox singleton event handle. Then it calls the utility again to close that handle, if found. 
 
+Here it is in action with 4 roblox alts on same computer. 
+
+![example-usage-1](/images/example-usage-1.png)
+
 ## Why Admin Required
 Admin privileges are required in order to query for the handles of another process (Roblox). 
 
