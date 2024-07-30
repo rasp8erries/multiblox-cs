@@ -26,7 +26,15 @@ Here it is in action with 4 roblox alts on same computer.
 ## Why Admin Required
 Admin privileges are required in order to query for the handles of another process (Roblox). 
 
-This is why when you run MultiBlox.exe it will first issue the UAC prompt in order to elevate permissions.
+This is why when you run MultiBlox.exe it will first issue the UAC prompt in order to elevate permissions. 
+
+*Unless you have UAC turned off in Windows settings ofc.* 
+
+Otherwise, this will popup when you run MultiBlox. 
+
+![uac-prompt](/images/uac-prompt.png) 
+
+So just click Yes to this to continue. 
 
 ## <a name="reqs"></a>Requirements
 - Windows Only
