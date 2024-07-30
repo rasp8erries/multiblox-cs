@@ -1,5 +1,9 @@
 # MultiBlox
- Utility to remove Roblox singleton event so you can run multiple instances of Roblox.
+ Utility to remove Roblox singleton event so you can run multiple instances of Roblox.  
+
+ I made this for my own use because bloxstrap stopped supporting the multi instance feature.  
+
+ And running older version of bloxstrap was starting to become problematic.. 
 
 ## Download
 Get the latest release here: [Releases](https://github.com/rasp8erries/multiblox-cs/releases/latest)
