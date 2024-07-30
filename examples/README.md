@@ -16,3 +16,5 @@ Also showing how it prompts for elevated permissions (needed).
 
 ![rerun-multiblox-1](./rerun-multiblox-example.gif)
 
+https://github.com/user-attachments/assets/5e9be2a2-7efc-4d76-aeba-905db4b63b86
+
