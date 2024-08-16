@@ -31,9 +31,9 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: multiblox-release
-        path: bin/MultiBlox/bin/Release
+        path: MultiBlox/bin/Release
     - uses: actions/upload-artifact@v4
       with:
         name: multiblox-debug
-        path: bin/MultiBlox/bin/Debug
+        path: MultiBlox/bin/Debug
       
