@@ -10,6 +10,8 @@
     <FileVersion>1.0.4</FileVersion>
     <NoWarn>CA1416</NoWarn> <!-- Ignore warnings for stuff that only works on Windows OS. -->
     <ApplicationIcon>myicon.ico</ApplicationIcon>
+	<PublishSingleFile>true</PublishSingleFile>
+	<SelfContained>true</SelfContained>
   </PropertyGroup>
   <ItemGroup>
     <None Update="handle64.exe">

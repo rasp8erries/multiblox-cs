@@ -1,3 +1,9 @@
-MultiBlox/obj/*
-MultiBlox/bin/*
+# Builds
+obj/
+bin/
+
+# Editor configuration
+.vs
+
+# I don't know
 .fake
